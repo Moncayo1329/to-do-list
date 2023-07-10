@@ -10,34 +10,53 @@ const defaultTodos = [
   { text: 'Tomar el Curso de Intro a React.js', completed: false },
   { text: 'Llorar con la Llorona', completed: false },
   { text: 'LALALALALA', completed: false },
+  { text: 'Usar estados derivados', completed: true },
 ];
 
 function App() {
   const [todos, setTodos] = React.useState(defaultTodos);
-  const[searchValue, setSearchValue] = React.
-  useState('');
+  const [searchValue, setSearchValue] = React.useState('');
 
-  const completedTodos = todos.filter(todo => !! todo.completed).length; 
+  const completedTodos = todos.filter(
+    todo => !!todo.completed
+  ).length;
   const totalTodos = todos.length;
 
   const searchedTodos = todos.filter(
- (todo) => {
- const todoText = todo.text.toLowerCase();
- const searchText = searchValue.toLowerCase();
-  return todoText.includes(searchText);
- }
-);
+    (todo) => {
+      const todoText = todo.text.toLowerCase();
+      const searchText = searchValue.toLowerCase();
+      return todoText.includes(searchText);
+    }
+  );
 
-  console.log('Los usuarios bucan todos de' + searchValue);
+  const completeTodo = (text) => {
+    const newTodos = [...todos];
+    const todoIndex = newTodos.findIndex(
+      (todo) => todo.text == text
+    );
+    newTodos[todoIndex].completed = true;
+    setTodos(newTodos);
+  };
 
-
+  const deleteTodo = (text) => {
+    const newTodos = [...todos];
+    const todoIndex = newTodos.findIndex(
+      (todo) => todo.text == text
+    );
+    newTodos.splice(todoIndex, 1);
+    setTodos(newTodos);
+  };
+  
   return (
     <>
-      <TodoCounter completed={completedTodos} total={totalTodos} />
-      <TodoSearch 
-     searchValue={searchValue} 
-     setSearchValue={setSearchValue}
-     
+      <TodoCounter
+        completed={completedTodos}
+        total={totalTodos} 
+      />
+      <TodoSearch
+        searchValue={searchValue}
+        setSearchValue={setSearchValue}
       />
 
       <TodoList>
@@ -46,14 +65,18 @@ function App() {
             key={todo.text}
             text={todo.text}
             completed={todo.completed}
+            onComplete={() => completeTodo(todo.text)}
+            onDelete={() => deleteTodo(todo.text)}
           />
         ))}
       </TodoList>
       
       <CreateTodoButton />
-
     </>
   );
 }
+
+
+
 
 export default App;
